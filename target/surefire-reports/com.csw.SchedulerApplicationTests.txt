@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.csw.SchedulerApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 26.956 s - in com.csw.SchedulerApplicationTests
