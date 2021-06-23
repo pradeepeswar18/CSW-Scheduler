@@ -14,7 +14,7 @@ import com.csw.entity.Employee;
 import com.csw.entity.ScheduleTrigger;
 
 @Repository
-public class ScheduleRepositoryImpl implements ScheduleRepository{
+public class ScheduleRepositoryImpl implements ScheduleRepository {
 	
 	@Autowired
 	private EntityManager entityManager;
@@ -22,14 +22,20 @@ public class ScheduleRepositoryImpl implements ScheduleRepository{
 	@Override
 	public Employee getEmployee(String employeeId){
 		return entityManager.find(Employee.class, employeeId);
-		
+	}
+	
+	@Override
+	public boolean isExistingEmployee(String employeeId) {
+		String queryString = "select e.employeeId from Employee e where e.employeeId = :employeeId";
+		Query query = entityManager.createQuery(queryString);
+		query.setParameter("employeeId", employeeId);
+		return query.getResultList().size()>0;
 	}
 	
 	@Override
 	public void addSchedule(Employee employee) {
 		Employee existingEmployee = entityManager.find(Employee.class, employee.getEmployeeId());
 		existingEmployee.addSchedule(employee.getScheduleList());
-		System.out.println("Reached!!");
 	}
 	
 	@Override

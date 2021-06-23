@@ -3,6 +3,7 @@ package com.csw.service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,7 @@ import com.csw.validator.Validator;
 
 @Service
 @Transactional
-public class ScheduleServiceImpl implements ScheduleService{
+public class ScheduleServiceImpl implements ScheduleService {
 	
 	@Autowired
 	private ScheduleRepository scheduleRepository;
@@ -67,12 +68,30 @@ public class ScheduleServiceImpl implements ScheduleService{
 		return triggers;
 	}
 	
+	private List<ScheduleTrigger> getMonthlyTriggers(Schedule schedule, String employeeId) {
+		List<ScheduleTrigger>  triggers = new ArrayList<>();
+		LocalDate date = schedule.getStartDate(), endDate = schedule.getEndDate();
+		
+		while(!date.isAfter(endDate)) {
+			ScheduleTrigger trigger = new ScheduleTrigger();
+			trigger.setDate(date);
+			trigger.setDuration(schedule.getDuration());
+			trigger.setTime(schedule.getTime());
+			trigger.setEmployeeId(employeeId);
+			triggers.add(trigger);
+			date = date.plusMonths(1);
+		}
+		
+		return triggers;
+	}
+
+	
 	@Override
 	public void addSchedule(EmployeeDTO employeeDTO) throws CswSchedulerException {
 		
 		Validator.validate(employeeDTO);
 				
-		Employee existingEmployee = scheduleRepository.getEmployee(employeeDTO.getEmployeeId());
+		//Employee existingEmployee = scheduleRepository.getEmployee(employeeDTO.getEmployeeId());
 		List<Schedule> scheduleList = new ArrayList<>();
 		Set<ScheduleDTO> scheduleDTOList = employeeDTO.getScheduleList();
 		List<ScheduleTrigger> scheduleTriggerList = new ArrayList<>();
@@ -97,14 +116,20 @@ public class ScheduleServiceImpl implements ScheduleService{
 				case WEEKLY:
 					triggers = getTriggers(schedule, employeeDTO.getEmployeeId(), 7);
 					break;
+					
+				case MONTHLY:
+					triggers = getMonthlyTriggers(schedule, employeeDTO.getEmployeeId());
+					break;
 				
 				default:
 					break;
 				}
 				
 			} else {
-				triggers = getTriggers(schedule,employeeDTO.getEmployeeId(), 1);
+				int increment = (int) (schedule.getStartDate().until(schedule.getEndDate(), ChronoUnit.DAYS)) + 2;
+				triggers = getTriggers(schedule, employeeDTO.getEmployeeId(), increment);
 			}
+			
 			scheduleTriggerList.addAll(triggers);
 			schedule.setSchedulerTriggerList(triggers);
 			scheduleList.add(schedule);
@@ -112,7 +137,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 		
 		Employee employee = new Employee(employeeDTO.getEmployeeId(), scheduleList); 
 		
-		if(existingEmployee != null) {
+		if(scheduleRepository.isExistingEmployee(employeeDTO.getEmployeeId())) {
 			scheduleRepository.addSchedule(employee);
 		} else {
 			scheduleRepository.createSchedule(employee);
@@ -169,6 +194,10 @@ public class ScheduleServiceImpl implements ScheduleService{
 		Validator.validateScheduleDate(startDate, endDate);
 		Validator.validateScheduleStartTime(time);
 		
+		if(!scheduleRepository.isExistingEmployee(employeeId)) {
+			throw new CswSchedulerException("Service.EMPLOYEE_NOT_PRESENT");
+		}
+		
 		return scheduleRepository.cancelSchedule(employeeId, startDate, endDate, time);
 	}
 	
@@ -180,8 +209,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 		Validator.validateEmployeeId(employeeId);
 		Validator.validateScheduleDate(startDate, endDate);
 		
-		Employee employee = scheduleRepository.getEmployee(employeeId);
-		if(employee == null ) {
+		if(!scheduleRepository.isExistingEmployee(employeeId)) {
 			throw new CswSchedulerException("Service.EMPLOYEE_NOT_PRESENT");
 		}
 		
@@ -206,6 +234,11 @@ public class ScheduleServiceImpl implements ScheduleService{
 	@Override
 	public Integer cancelScheduleByDate(String employeeId, String dateString) throws CswSchedulerException {
 		LocalDate date = LocalDate.parse(dateString);
+		
+		if(!scheduleRepository.isExistingEmployee(employeeId)) {
+			throw new CswSchedulerException("Service.EMPLOYEE_NOT_PRESENT");
+		}
+		
 		return scheduleRepository.cancelScheduleByDate(employeeId,date);
 	}
 	
@@ -213,6 +246,11 @@ public class ScheduleServiceImpl implements ScheduleService{
 	public Integer cancelScheduleByDate(String employeeId, String dateString, String timeString) throws CswSchedulerException {
 		LocalDate date = LocalDate.parse(dateString);
 		LocalTime time = LocalTime.parse(timeString);
+		
+		if(!scheduleRepository.isExistingEmployee(employeeId)) {
+			throw new CswSchedulerException("Service.EMPLOYEE_NOT_PRESENT");
+		}
+		
 		return scheduleRepository.cancelScheduleByDate(employeeId, date, time);
 	}
 }

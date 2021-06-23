@@ -11,6 +11,7 @@ public interface ScheduleRepository {
 	public void addSchedule(Employee employee);
 	public void addScheduleTriggers(List<ScheduleTrigger> schedulerTriggerList);
 	public Employee getEmployee(String employeeId);
+	public boolean isExistingEmployee(String employeeId);
 	public void createSchedule(Employee employee);
 	public List<ScheduleTrigger> getSchedule(LocalDate date);
 	public Integer cancelSchedule(String employeeId, LocalDate startDate, LocalDate endDate);
