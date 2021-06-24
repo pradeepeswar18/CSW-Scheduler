@@ -6,7 +6,7 @@ import com.csw.exception.CswSchedulerException;
 import com.csw.model.EmployeeDTO;
 import com.csw.model.ScheduleTriggerDTO;
 
-public interface ScheduleService {
+public interface SchedulerService {
 	public void addSchedule(EmployeeDTO employeeDTO) throws CswSchedulerException;
 	public EmployeeDTO getEmployee(String employeeId) throws CswSchedulerException;
 	public List<ScheduleTriggerDTO> getSchedule(String dateString) throws CswSchedulerException;

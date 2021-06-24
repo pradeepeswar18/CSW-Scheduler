@@ -17,7 +17,7 @@ import com.csw.model.EmployeeDTO;
 import com.csw.model.ScheduleDTO;
 
 @Repository
-public class ScheduleRepositoryImpl implements ScheduleRepository {
+public class SchedulerRepositoryImpl implements SchedulerRepository {
 	
 	@Autowired
 	private EntityManager entityManager;

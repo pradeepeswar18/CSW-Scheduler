@@ -22,15 +22,15 @@ import com.csw.model.EmployeeDTO;
 import com.csw.model.ScheduleDTO;
 import com.csw.model.ScheduleFrequency;
 import com.csw.model.ScheduleTriggerDTO;
-import com.csw.repository.ScheduleRepository;
+import com.csw.repository.SchedulerRepository;
 import com.csw.validator.Validator;
 
 @Service
 @Transactional
-public class ScheduleServiceImpl implements ScheduleService {
+public class SchedulerServiceImpl implements SchedulerService {
 	
 	@Autowired
-	private ScheduleRepository scheduleRepository;
+	private SchedulerRepository scheduleRepository;
 	
 	private List<ScheduleTrigger> getTriggers(Schedule schedule, String employeeId) {
 		List<ScheduleTrigger>  triggers = new ArrayList<>();

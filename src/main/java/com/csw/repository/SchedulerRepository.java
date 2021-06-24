@@ -8,7 +8,7 @@ import com.csw.entity.Employee;
 import com.csw.entity.ScheduleTrigger;
 import com.csw.model.EmployeeDTO;
 
-public interface ScheduleRepository {
+public interface SchedulerRepository {
 	public void addSchedule(Employee employee);
 	public void addScheduleTriggers(List<ScheduleTrigger> schedulerTriggerList);
 	public Employee getEmployee(String employeeId);

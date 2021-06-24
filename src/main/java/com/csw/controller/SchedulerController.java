@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.csw.exception.CswSchedulerException;
 import com.csw.model.EmployeeDTO;
 import com.csw.model.ScheduleTriggerDTO;
-import com.csw.service.ScheduleService;
+import com.csw.service.SchedulerService;
 
 @RestController
 @RequestMapping("/schedule")
-public class ScheduleController {
+public class SchedulerController {
 	
 	@Autowired
 	private Environment environment;
 
 	@Autowired
-	private ScheduleService schedulerService;
+	private SchedulerService schedulerService;
 	
 	@GetMapping(value = "/get/employee/{employeeId}")
 	public ResponseEntity<EmployeeDTO> getEmployee( @PathVariable String employeeId) throws CswSchedulerException {
