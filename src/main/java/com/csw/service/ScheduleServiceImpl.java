@@ -168,7 +168,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 	
 	@Override
-	public List<ScheduleTriggerDTO> getSchedule(String dateString) throws CswSchedulerException{
+	public List<ScheduleTriggerDTO> getSchedule(String dateString) throws CswSchedulerException {
 		LocalDate date = LocalDate.parse(dateString);
 		List<ScheduleTriggerDTO> scheduleTriggerDTOList = null;
 		List<ScheduleTrigger> scheduleTriggerList;
@@ -182,6 +182,17 @@ public class ScheduleServiceImpl implements ScheduleService {
 			}	
 		}
 		return scheduleTriggerDTOList;
+	}
+	
+	@Override
+	public void updateSchedule(EmployeeDTO employeeDTO) throws CswSchedulerException {
+		Validator.validate(employeeDTO);
+		
+		if(!scheduleRepository.isExistingEmployee(employeeDTO.getEmployeeId())) {
+			throw new CswSchedulerException("Service.EMPLOYEE_NOT_PRESENT");
+		}
+		
+		scheduleRepository.updateSchedule(employeeDTO);
 	}
 	
 	@Override

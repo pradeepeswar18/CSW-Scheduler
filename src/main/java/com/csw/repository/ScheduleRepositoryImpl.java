@@ -2,6 +2,7 @@ package com.csw.repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import com.csw.entity.Employee;
 import com.csw.entity.ScheduleTrigger;
+import com.csw.model.EmployeeDTO;
+import com.csw.model.ScheduleDTO;
 
 @Repository
 public class ScheduleRepositoryImpl implements ScheduleRepository {
@@ -57,6 +60,26 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 		query.setParameter("date", date);
 		List<ScheduleTrigger> scheduleTriggerList = query.getResultList();
 		return scheduleTriggerList;
+	}
+	
+	@Override
+	public void updateSchedule(EmployeeDTO employeeDTO) {
+		List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
+		scheduleDTOList.addAll(employeeDTO.getScheduleList());
+		
+		for(ScheduleDTO scheduleDTO: scheduleDTOList) {
+			String queryString = "update Schedule s set s.time = :newTime where s.employeeId = :employeeId AND s.startDate = :startDate "
+					+ "AND s.endDate= :endDate AND s.duration = :duration AND s.scheduleFrequency = :frequency";
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("employeeId", employeeDTO.getEmployeeId());
+			query.setParameter("startDate", scheduleDTO.getStartDate());
+			query.setParameter("endDate", scheduleDTO.getEndDate());
+			query.setParameter("duration", scheduleDTO.getDuration());
+			query.setParameter("frequency", scheduleDTO.getScheduleFrequency());
+			query.setParameter("newTime", scheduleDTO.getTime());
+			query.executeUpdate();
+			
+		}
 	}
 	
 	@Override

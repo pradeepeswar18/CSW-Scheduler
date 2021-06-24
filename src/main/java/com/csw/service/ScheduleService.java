@@ -10,6 +10,7 @@ public interface ScheduleService {
 	public void addSchedule(EmployeeDTO employeeDTO) throws CswSchedulerException;
 	public EmployeeDTO getEmployee(String employeeId) throws CswSchedulerException;
 	public List<ScheduleTriggerDTO> getSchedule(String dateString) throws CswSchedulerException;
+	public void updateSchedule(EmployeeDTO employeeDTO) throws CswSchedulerException;
 	public Integer cancelSchedule(String employeeId, String startDateString, String endDateString) throws CswSchedulerException;
 	public Integer cancelSchedule(String employeeId, String startDateString, String endDateString, String timeString) throws CswSchedulerException;
 	public Integer cancelSchedule(String employeeId) throws CswSchedulerException;

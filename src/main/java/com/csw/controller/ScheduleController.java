@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +47,14 @@ public class ScheduleController {
 		schedulerService.addSchedule(employeeDTO);
 		String successMessage = environment.getProperty("Controller.INSERT_SUCCESS");
 		return new ResponseEntity<>(successMessage, HttpStatus.CREATED);
+	}
+	
+	@PutMapping(value = "/update/time")
+	public ResponseEntity<String> updateSchedule(@RequestBody EmployeeDTO employeeDTO) throws CswSchedulerException {
+		schedulerService.updateSchedule(employeeDTO);
+		String successMessage = environment.getProperty("Controller.UPDATE_SUCCESS");
+		return new ResponseEntity<>(successMessage, HttpStatus.OK);
+		
 	}
 	
 	@DeleteMapping(value = "/cancel/{employeeId}/{startDateString}/{endDateString}")
