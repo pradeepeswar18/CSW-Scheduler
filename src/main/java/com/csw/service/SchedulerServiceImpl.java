@@ -32,18 +32,22 @@ public class SchedulerServiceImpl implements SchedulerService {
 	@Autowired
 	private SchedulerRepository scheduleRepository;
 	
+	private ScheduleTrigger getTrigger(Schedule schedule, LocalDate date, String employeeId) {
+		ScheduleTrigger trigger = new ScheduleTrigger();
+		trigger.setDate(date);
+		trigger.setDuration(schedule.getDuration());
+		trigger.setTime(schedule.getTime());
+		trigger.setEmployeeId(employeeId);
+		return trigger;
+	}
+	
 	private List<ScheduleTrigger> getTriggers(Schedule schedule, String employeeId) {
 		List<ScheduleTrigger>  triggers = new ArrayList<>();
 		LocalDate date = schedule.getStartDate(), endDate = schedule.getEndDate();
 		
 		while(!date.isAfter(endDate)) {
 			if(!(date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || (date.getDayOfWeek().equals(DayOfWeek.SUNDAY)))) {
-				ScheduleTrigger trigger = new ScheduleTrigger();
-				trigger.setDate(date);
-				trigger.setDuration(schedule.getDuration());
-				trigger.setTime(schedule.getTime());
-				trigger.setEmployeeId(employeeId);
-				triggers.add(trigger);
+				triggers.add(getTrigger(schedule, date, employeeId));
 			}
 			date = date.plusDays(1);
 		}
@@ -56,12 +60,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 		LocalDate date = schedule.getStartDate(), endDate = schedule.getEndDate();
 		
 		while(!date.isAfter(endDate)) {
-			ScheduleTrigger trigger = new ScheduleTrigger();
-			trigger.setDate(date);
-			trigger.setDuration(schedule.getDuration());
-			trigger.setTime(schedule.getTime());
-			trigger.setEmployeeId(employeeId);
-			triggers.add(trigger);
+			triggers.add(getTrigger(schedule, date, employeeId));
 			date = date.plusDays(increment);
 		}
 		
@@ -73,12 +72,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 		LocalDate date = schedule.getStartDate(), endDate = schedule.getEndDate();
 		
 		while(!date.isAfter(endDate)) {
-			ScheduleTrigger trigger = new ScheduleTrigger();
-			trigger.setDate(date);
-			trigger.setDuration(schedule.getDuration());
-			trigger.setTime(schedule.getTime());
-			trigger.setEmployeeId(employeeId);
-			triggers.add(trigger);
+			triggers.add(getTrigger(schedule, date, employeeId));
 			date = date.plusMonths(1);
 		}
 		
@@ -149,9 +143,11 @@ public class SchedulerServiceImpl implements SchedulerService {
 		Validator.validateEmployeeId(employeeId);
 		
 		Employee employee  = scheduleRepository.getEmployee(employeeId);
+		
 		if(employee==null ) {
 			throw new CswSchedulerException("Service.EMPLOYEE_NOT_PRESENT");
 		}
+		
 		EmployeeDTO employeeDTO = null;
 		
 		Set<ScheduleDTO> scheduleDTOList = new HashSet<>();
