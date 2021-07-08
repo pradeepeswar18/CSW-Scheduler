@@ -26,7 +26,7 @@ public class Validator {
 	
 	public static void validateEmployeeId(String employeeId) throws CswSchedulerException {
 		if(!((employeeId != null) && (employeeId.matches("[\\w]+@[a-z]+[.](com|in)")))) 
-			throw new CswSchedulerException("Validator.INVALID_START_OR_END_DATE");
+			throw new CswSchedulerException("Validator.INVALID_EMAIL_ID");
 	}
 	
 	public static void validateScheduleDate(LocalDate startDate, LocalDate endDate) throws CswSchedulerException{
